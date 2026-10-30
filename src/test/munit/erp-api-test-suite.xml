@@ -41,25 +41,8 @@
         </munit:behavior>
         <munit:execution>
             <set-variable variableName="orderId" value="#[attributes.uriParams.orderId]"/>
-            <set-variable variableName="request" value="#[payload]"/>
-            <set-variable variableName="origin" value="#['SF:' ++ vars.orderId]"/>
             <flow-ref name="check-api-key"/>
-            <flow-ref name="find-odoo-order"/>
-            <choice>
-                <when expression="#[vars.existingOrder != null]">
-                    <set-payload value="#[output application/json --- { status: 'Confirmed', erpOrderNumber: vars.existingOrder.name, error: null }]"/>
-                </when>
-                <otherwise>
-                    <try>
-                        <flow-ref name="create-odoo-order"/>
-                        <error-handler>
-                            <on-error-continue type="APP:ERP_REJECTED">
-                                <set-payload value="#[output application/json --- { status: 'Failed', erpOrderNumber: null, error: error.description }]"/>
-                            </on-error-continue>
-                        </error-handler>
-                    </try>
-                </otherwise>
-            </choice>
+            <flow-ref name="erp-submit"/>
         </munit:execution>
         <munit:validation>
             <munit-tools:assert-that expression="#[payload.error]" is="#[MunitTools::nullValue()]"/>
@@ -82,25 +65,8 @@
         </munit:behavior>
         <munit:execution>
             <set-variable variableName="orderId" value="#[attributes.uriParams.orderId]"/>
-            <set-variable variableName="request" value="#[payload]"/>
-            <set-variable variableName="origin" value="#['SF:' ++ vars.orderId]"/>
             <flow-ref name="check-api-key"/>
-            <flow-ref name="find-odoo-order"/>
-            <choice>
-                <when expression="#[vars.existingOrder != null]">
-                    <set-payload value="#[output application/json --- { status: 'Confirmed', erpOrderNumber: vars.existingOrder.name, error: null }]"/>
-                </when>
-                <otherwise>
-                    <try>
-                        <flow-ref name="create-odoo-order"/>
-                        <error-handler>
-                            <on-error-continue type="APP:ERP_REJECTED">
-                                <set-payload value="#[output application/json --- { status: 'Failed', erpOrderNumber: null, error: error.description }]"/>
-                            </on-error-continue>
-                        </error-handler>
-                    </try>
-                </otherwise>
-            </choice>
+            <flow-ref name="erp-submit"/>
         </munit:execution>
         <munit:validation>
             <munit-tools:assert-that expression="#[payload.erpOrderNumber]" is="#[MunitTools::equalTo('S00042')]"/>
@@ -121,25 +87,8 @@
         </munit:behavior>
         <munit:execution>
             <set-variable variableName="orderId" value="#[attributes.uriParams.orderId]"/>
-            <set-variable variableName="request" value="#[payload]"/>
-            <set-variable variableName="origin" value="#['SF:' ++ vars.orderId]"/>
             <flow-ref name="check-api-key"/>
-            <flow-ref name="find-odoo-order"/>
-            <choice>
-                <when expression="#[vars.existingOrder != null]">
-                    <set-payload value="#[output application/json --- { status: 'Confirmed', erpOrderNumber: vars.existingOrder.name, error: null }]"/>
-                </when>
-                <otherwise>
-                    <try>
-                        <flow-ref name="create-odoo-order"/>
-                        <error-handler>
-                            <on-error-continue type="APP:ERP_REJECTED">
-                                <set-payload value="#[output application/json --- { status: 'Failed', erpOrderNumber: null, error: error.description }]"/>
-                            </on-error-continue>
-                        </error-handler>
-                    </try>
-                </otherwise>
-            </choice>
+            <flow-ref name="erp-submit"/>
         </munit:execution>
         <munit:validation>
             <munit-tools:assert-that expression="#[payload.status]" is="#[MunitTools::equalTo('Failed')]"/>
@@ -156,25 +105,8 @@
         </munit:behavior>
         <munit:execution>
             <set-variable variableName="orderId" value="#[attributes.uriParams.orderId]"/>
-            <set-variable variableName="request" value="#[payload]"/>
-            <set-variable variableName="origin" value="#['SF:' ++ vars.orderId]"/>
             <flow-ref name="check-api-key"/>
-            <flow-ref name="find-odoo-order"/>
-            <choice>
-                <when expression="#[vars.existingOrder != null]">
-                    <set-payload value="#[output application/json --- { status: 'Confirmed', erpOrderNumber: vars.existingOrder.name, error: null }]"/>
-                </when>
-                <otherwise>
-                    <try>
-                        <flow-ref name="create-odoo-order"/>
-                        <error-handler>
-                            <on-error-continue type="APP:ERP_REJECTED">
-                                <set-payload value="#[output application/json --- { status: 'Failed', erpOrderNumber: null, error: error.description }]"/>
-                            </on-error-continue>
-                        </error-handler>
-                    </try>
-                </otherwise>
-            </choice>
+            <flow-ref name="erp-submit"/>
         </munit:execution>
     </munit:test>
 </mule>
