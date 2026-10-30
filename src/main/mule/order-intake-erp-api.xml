@@ -40,23 +40,9 @@
         </http:listener>
         <flow-ref name="check-api-key" doc:name="Check API key"/>
         <set-variable variableName="orderId" value="#[attributes.uriParams.orderId]" doc:name="orderId"/>
-        <flow-ref name="erp-submit" doc:name="Submit to Odoo"/>
-        <error-handler ref="erp-api-errors"/>
-    </flow>
-
-    <!-- Submit logic, separate from the HTTP listener so MUnit can run it directly -->
-    <flow name="erp-submit">
-        <!-- Read the request once into Java with every optional field defaulted, so later
-             expressions never mix JSON and Java data (that mix fails media type inference) -->
-        <set-variable variableName="request" doc:name="Request from Salesforce" value="#[output application/java --- {
-            intakeNumber: (payload.intakeNumber default '') as String,
-            orderNumber: (payload.orderNumber default '') as String,
-            poNumber: (payload.poNumber default '') as String,
-            accountNumber: (payload.accountNumber default '') as String,
-            lines: payload.lines default []
-        }]"/>
+        <set-variable variableName="request" value="#[payload]" doc:name="Request from Salesforce"/>
         <set-variable variableName="origin" value="#['SF:' ++ vars.orderId]" doc:name="Odoo origin key"/>
-        <logger level="INFO" message="#['ERP submit for Salesforce order ' ++ vars.orderId ++ ' (' ++ vars.request.intakeNumber ++ ')']"/>
+        <logger level="INFO" message="#[%dw 2.0&#10;output application/java&#10;---&#10;'ERP submit for Salesforce order ' ++ vars.orderId ++ ' (' ++ (vars.request.intakeNumber default '') as String ++ ')']"/>
 
         <!-- Already in Odoo? Return it, so a resubmit never creates a duplicate order -->
         <flow-ref name="find-odoo-order" doc:name="Find existing Odoo order"/>
@@ -226,13 +212,8 @@
             }]"/>
         </on-error-continue>
         <on-error-continue type="ANY">
-            <logger level="ERROR" message="#['ERP API failed at ' ++ (vars.odooModel default '-') ++ '/' ++ (vars.odooMethod default '-') ++ ': ' ++ (error.detailedDescription default error.description default '')]"/>
-            <set-payload value="#[output application/json --- {
-                status: 'Failed',
-                erpOrderNumber: null,
-                error: 'ERP integration error (' ++ (error.errorType.namespace default '') ++ ':' ++ (error.errorType.identifier default '')
-                    ++ ' at ' ++ (vars.odooModel default '-') ++ '/' ++ (vars.odooMethod default '-') ++ '): ' ++ (error.description default 'unknown error')
-            }]"/>
+            <logger level="ERROR" message="#['ERP API failed: ' ++ (error.description default '')]"/>
+            <set-payload value="#[output application/json --- { status: 'Failed', erpOrderNumber: null, error: 'ERP integration error: ' ++ (error.description default 'unknown error') }]"/>
         </on-error-continue>
     </error-handler>
 </mule>
