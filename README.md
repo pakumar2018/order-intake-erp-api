@@ -53,3 +53,7 @@ API spec: `src/main/resources/api/order-intake-erp-api.yaml` (OpenAPI 3).
 ## 4. Connect Salesforce
 Create the named credential `Order_Intake_Mule` with URL `<public URL>/api` and a custom header
 `X-Api-Key`. Once it exists, the agent stops simulating the ERP and calls this API.
+
+## Repository
+This API is part of the Order Intake Assistant. The full solution (Salesforce, both MuleSoft apps, docs and
+automatic CloudHub deployment) is maintained in https://github.com/pakumar2018/agentforce-order-intake
