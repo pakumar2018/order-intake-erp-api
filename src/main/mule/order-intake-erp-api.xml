@@ -212,8 +212,13 @@
             }]"/>
         </on-error-continue>
         <on-error-continue type="ANY">
-            <logger level="ERROR" message="#['ERP API failed: ' ++ (error.description default '')]"/>
-            <set-payload value="#[output application/json --- { status: 'Failed', erpOrderNumber: null, error: 'ERP integration error: ' ++ (error.description default 'unknown error') }]"/>
+            <logger level="ERROR" message="#['ERP API failed at ' ++ (vars.odooModel default '-') ++ '/' ++ (vars.odooMethod default '-') ++ ': ' ++ (error.detailedDescription default error.description default '')]"/>
+            <set-payload value="#[output application/json --- {
+                status: 'Failed',
+                erpOrderNumber: null,
+                error: 'ERP integration error (' ++ (error.errorType.namespace default '') ++ ':' ++ (error.errorType.identifier default '')
+                    ++ ' at ' ++ (vars.odooModel default '-') ++ '/' ++ (vars.odooMethod default '-') ++ '): ' ++ (error.description default 'unknown error')
+            }]"/>
         </on-error-continue>
     </error-handler>
 </mule>
