@@ -1,5 +1,9 @@
 # Order Intake ERP API (MuleSoft → Odoo)
 
+> **Main repository:** this app is part of the Email-to-Order Agent (OSF Agentforce Hackathon). It is maintained and deployed from
+> [pakumar2018/agentforce-order-intake](https://github.com/pakumar2018/agentforce-order-intake) (`mulesoft/order-intake-erp-api`),
+> where GitHub Actions deploy it to CloudHub 2.0. This repository is a copy of that folder.
+
 System API that the Agentforce **Order Intake Assistant** calls to send approved orders to the ERP.
 Salesforce posts the order with its lines; this app creates and confirms the sales order in **Odoo**
 and returns the Odoo order number, or a reason the ERP rejected it.
@@ -53,7 +57,3 @@ API spec: `src/main/resources/api/order-intake-erp-api.yaml` (OpenAPI 3).
 ## 4. Connect Salesforce
 Create the named credential `Order_Intake_Mule` with URL `<public URL>/api` and a custom header
 `X-Api-Key`. Once it exists, the agent stops simulating the ERP and calls this API.
-
-## Repository
-This API is part of the Order Intake Assistant. The full solution (Salesforce, both MuleSoft apps, docs and
-automatic CloudHub deployment) is maintained in https://github.com/pakumar2018/agentforce-order-intake
